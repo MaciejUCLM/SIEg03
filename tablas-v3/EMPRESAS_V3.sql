@@ -9,7 +9,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[EMPRESAS_V3](
-	[IdEmpresa] [int] NOT NULL PRIMARY KEY,
+	[IdEmpresa] [int] NOT NULL,
 	[Clave] [nvarchar](18) NOT NULL,
 	[Isin] [char](12) NOT NULL,
 	[Nombre] [nvarchar](35) NOT NULL,
@@ -27,7 +27,7 @@ select
 	convert(nvarchar(18),Clave) as Clave,
 	convert(char(12),Isin) as Isin,
 	convert(nvarchar(35),Nombre) as Nombre,
-	convert(char(3),IdMercado) as IdMercado,
+	convert(varchar(6),IdMercado) as IdMercado,
 	convert(int,IdSector) as IdSector,
 	convert(smalldatetime,FechaInsercion) as FechaInsercion
 from [SNTBROKER_SIE].[dbo].[EMPRESAS_V2];

@@ -9,7 +9,7 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 CREATE TABLE [dbo].[SECTORES_v3](
-	[IdSector] [int] NOT NULL PRIMARY KEY,
+	[IdSector] [int] NOT NULL,
 	[Sector] [nvarchar](40) NOT NULL
 ) ON [PRIMARY]
 GO
