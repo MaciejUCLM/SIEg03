@@ -1,4 +1,4 @@
-USE [SNTBROKER_SIE]
+USE [SNTBROKERv2]
 GO
 
 /****** Object:  Table [dbo].[MATRIZ1_TEMP_v2]    Script Date: 22/02/2021 17:55:46 ******/
