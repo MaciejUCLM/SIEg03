@@ -1,4 +1,4 @@
-USE [SNTBROKERv2]
+USE [SNTBROKER_SIE_V3]
 
 /****** Object:  Table [dbo].[ULTDIA_INTRADIA1_HOY_TEMP_v2]    Script Date: 24/02/2021 21:35:23 ******/
 SET ANSI_NULLS ON

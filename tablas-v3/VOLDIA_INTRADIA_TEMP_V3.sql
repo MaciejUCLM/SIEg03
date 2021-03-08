@@ -1,4 +1,4 @@
-USE [SNTBROKERv2]
+USE [SNTBROKER_SIE_V3]
 GO
 
 /****** Object:  Table [dbo].[VOLDIA_INTRADIA_TEMP_v2]    Script Date: 24/02/2021 22:23:37 ******/
