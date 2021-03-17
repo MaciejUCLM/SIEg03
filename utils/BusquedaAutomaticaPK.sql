@@ -1,4 +1,4 @@
-select count(*) from ACCIONESEEUU_V2
+select count(*) from ACCIONESEEUU_V3
 
 select * from sys.columns
 
