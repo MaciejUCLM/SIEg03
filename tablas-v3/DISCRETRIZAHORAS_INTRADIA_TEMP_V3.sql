@@ -12,16 +12,11 @@ CREATE TABLE [dbo].[DISCRETRIZAHORAS_INTRADIA_TEMP_V3](
 	[IDMERCADO] [smallint] NOT NULL,
 	[IDEMPRESA] [smallint] NOT NULL,
 	[CLAVE] [nvarchar](10) NOT NULL,
-
-	[ANNIO] [smallint] NOT NULL,
-	[MES] [tinyint] NOT NULL,
-	[DIA] [tinyint] NOT NULL,
+	[FECHA] [smalldatetime] NOT NULL,
 	[HORA] [nvarchar](5) NOT NULL,
-
 	[ULT] [float](15) NOT NULL,
 	[DIF] [float](15) NOT NULL,
 	[PDIF] [float](15) NOT NULL,
-
 	[MAXIMO] [float](15) NOT NULL,
 	[MINIMO] [float](15) NOT NULL,
 	[VOL] [int] NOT NULL
@@ -33,16 +28,11 @@ select
  convert(smallint, IDMERCADO) as IDMERCADO,
  convert(smallint, IDEMPRESA)  as IDEMPRESA,
  convert(nvarchar(10), CLAVE)  as CLAVE,
-
- convert(smallint, ANNIO) as ANNIO,
- convert(tinyint, MES)  as MES,
- convert(tinyint, DIA)  as DIA,
+ convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
  convert(nvarchar(5), HORA) as HORA,
-
  convert(float(15), ULT)  as ULT,
  convert(float(15), DIF)  as DIF,
  convert(float(15), PDIF) as PDIF,
-
  convert(float(15), MAXIMO)  as MAXIMO,
  convert(float(15), MINIMO)  as MINIMO,
  convert(int, VOL) as VOL

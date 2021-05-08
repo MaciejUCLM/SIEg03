@@ -10,9 +10,7 @@ GO
 CREATE TABLE [dbo].[ULTDIA_INTRADIA1_HOY_TEMP_v3](
 	[IDEMPRESA] [smallint] NOT NULL,
     [CLAVE] [varchar](5) NOT NULL,
-    [ANNIO] [smallint] NOT NULL,
-    [MES] [smallint] NOT NULL,
-    [DIA] [smallint] NOT NULL,
+    [FECHA] [smalldatetime] NOT NULL,
 	[15_25] [real] NOT NULL,
     [15_30] [real] NOT NULL,
     [15_35] [real] NOT NULL,
@@ -99,9 +97,7 @@ INSERT INTO [dbo].[ULTDIA_INTRADIA1_HOY_TEMP_v3]
 select
 	convert(smallint, IDEMPRESA) as IDEMPRESA,
 	convert(varchar(5), CLAVE) as CLAVE,
-	convert(smallint, ANNIO) as ANNIO,
-	convert(smallint, MES) as MES,
-	convert(smallint, DIA) as DIA,
+    convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
 	convert(real, [15_25]) as [15_25],
     convert(real, [15_30]) as [15_30],
     convert(real, [15_35]) as [15_35],
