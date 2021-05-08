@@ -27,105 +27,13 @@ select * from Cot_Diarias_V3 a where NOT EXISTS (select * from Nemonicos_v3 b wh
 select * from Nemonicos_v3
 */
 
----------------------------------
----------------------------------
----------------------------------
-
-declare @TablaO varchar(250), @ColumnaO varchar(250), @TipoO int
-declare @TablaD varchar(250), @ColumnaD varchar(250), @TipoD int
-declare @cadena nvarchar(500), @ParmDefinition nvarchar(500);  
-declare @total varchar(30), @Total_RegistrosO varchar(30), @Total_NoExisten varchar(30), @Factor2_Porcentaje_Coincidencia real, @Total_F3_N1 varchar(30), @Total_F3_N2 varchar(30), @Factor3_PorcentajeUsoFK real
-
-Create table #Resultado (TablaO varchar(250), ColumnaO varchar(250), TablaD varchar(250), ColumnaD varchar(250), Factor1_DistanciaCadena real, Total_RegistrosO int, Total_NoExisten int, Factor2_Porcentaje_Coincidencia real, Factor3_PorcentajeUsoFK real)
-
-declare ColumnasOrigen cursor local fast_forward for 
-	select  a.name as Tabla, b.name as Columna, b.xtype as Tipo 
-	from sys.sysobjects a, sys.syscolumns b 
-	where a.id=b.id and a.type='U' -- and a.name like '%V3%'
-open ColumnasOrigen
-fetch next from ColumnasOrigen into @TablaO, @ColumnaO,@TipoO
-while @@fetch_status = 0
-begin
-
-	select @cadena='select @total=count(*) from ['+@TablaO+'] a where a.['+@ColumnaO+'] Is Not Null' 
---	select @cadena
-	SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
-	exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
-	select @Total_RegistrosO=@total
-
-	declare ColumnasDestino cursor local fast_forward for 
-		select  a.name as Tabla, b.name as Columna, b.xtype as Tipo 
-		from sys.sysobjects a, sys.syscolumns b 
-		where 
-			a.id=b.id and a.type='U' -- and a.name like '%V3%' 
-			and convert(varchar(250),a.name)<>@TablaO 
-			--and b.xtype=@tipoO
-			and b.xtype in (select TipoC from TiposCompatibles where TipoO=@tipoO)
-	open ColumnasDestino
-	fetch next from ColumnasDestino into @TablaD, @ColumnaD,@TipoD
-	while @@fetch_status = 0
-	begin
-
-		select @cadena='select @total=count(*) from ['+@TablaO+'] a where NOT EXISTS (select * from [' +@TablaD+'] b where a.['+@ColumnaO+']=b.['+@ColumnaD+'] )' 
-		SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
-		exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
-		select @Total_NoExisten=@total
-		select @Factor2_Porcentaje_Coincidencia = 100-(@Total_NoExisten*100)/@Total_RegistrosO
-
-		select @Factor3_PorcentajeUsoFK = 0
-		if @Factor2_Porcentaje_Coincidencia>=75
-			begin
-
-				select @cadena='select @total=count(distinct ['+@ColumnaD+']) from ['+@TablaD+']' 
-				SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
-				exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
-				select @Total_F3_N1=@total
-
-				select @cadena='select @total=count(distinct ['+@ColumnaD+']) from ['+@TablaD+'] a where EXISTS (select * from [' +@TablaO+'] b where b.['+@ColumnaO+']=a.['+@ColumnaD+'] )' 
-				SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
-				exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
-				select @Total_F3_N2=@total
-				select @Factor3_PorcentajeUsoFK = (@Total_F3_N2*100)/@Total_F3_N1
---				select @Factor3_PorcentajeUsoFK
-			end
-
-		insert into #Resultado
-		select 
-			@TablaO, @ColumnaO, @TablaD, @ColumnaD, 
-			case Difference(@ColumnaO,@ColumnaD) 
-				when 0 then 0
-				when 1 then 25
-				when 2 then 50
-				when 3 then 75
-				else 100 
-			end as Factor1_DistanciaCadena, 
-			@Total_RegistrosO, @Total_NoExisten, @Factor2_Porcentaje_Coincidencia,
-			@Factor3_PorcentajeUsoFK
-
-		fetch next from ColumnasDestino into @TablaD, @ColumnaD,@TipoD
-	end
-	close ColumnasDestino
-	deallocate ColumnasDestino
-
-	fetch next from ColumnasOrigen into @TablaO, @ColumnaO,@TipoO
-end
-close ColumnasOrigen
-deallocate ColumnasOrigen
-
-select * from #Resultado 
-where Factor2_Porcentaje_Coincidencia>=75
-and Factor3_PorcentajeUsoFK>=25
-
---Drop Table #Resultado
-
-/*
--- Creaci�n Tipos Compatibles
+drop table if exists TiposCompatibles;
+-- Creacion Tipos Compatibles
 Create table TiposCompatibles (TipoO int, TipoC int)
 
 insert into TiposCompatibles
 select user_type_id, user_type_id  from sys.types
 select * from sys.types
-
 
 
 -- Tipos numericos
@@ -256,14 +164,101 @@ select 239,167
 union
 select 239,165
 
-
-
 --48,52,56,59,62,108,127
 --35,99,165,167,239
 
-*/
 
+---------------------------------
+---------------------------------
+---------------------------------
 
+declare @TablaO varchar(250), @ColumnaO varchar(250), @TipoO int
+declare @TablaD varchar(250), @ColumnaD varchar(250), @TipoD int
+declare @cadena nvarchar(500), @ParmDefinition nvarchar(500);
+declare @total varchar(30), @Total_RegistrosO varchar(30), @Total_NoExisten varchar(30), @Factor2_Porcentaje_Coincidencia real, @Total_F3_N1 varchar(30), @Total_F3_N2 varchar(30), @Factor3_PorcentajeUsoFK real
+
+drop table if exists #Resultado
+Create table #Resultado (TablaO varchar(250), ColumnaO varchar(250), TablaD varchar(250), ColumnaD varchar(250), Factor1_DistanciaCadena real, Total_RegistrosO int, Total_NoExisten int, Factor2_Porcentaje_Coincidencia real, Factor3_PorcentajeUsoFK real)
+
+declare ColumnasOrigen cursor local fast_forward for 
+	select  a.name as Tabla, b.name as Columna, b.xtype as Tipo 
+	from sys.sysobjects a, sys.syscolumns b 
+	where a.id=b.id and a.type='U' -- and a.name like '%V3%'
+open ColumnasOrigen
+fetch next from ColumnasOrigen into @TablaO, @ColumnaO,@TipoO
+while @@fetch_status = 0
+begin
+
+	select @cadena='select @total=count(*) from ['+@TablaO+'] a where a.['+@ColumnaO+'] Is Not Null' 
+--	select @cadena
+	SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
+	exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
+	select @Total_RegistrosO=@total
+
+	declare ColumnasDestino cursor local fast_forward for 
+		select  a.name as Tabla, b.name as Columna, b.xtype as Tipo 
+		from sys.sysobjects a, sys.syscolumns b 
+		where 
+			a.id=b.id and a.type='U' -- and a.name like '%V3%' 
+			and convert(varchar(250),a.name)<>@TablaO 
+			--and b.xtype=@tipoO
+			and b.xtype in (select TipoC from TiposCompatibles where TipoO=@tipoO)
+	open ColumnasDestino
+	fetch next from ColumnasDestino into @TablaD, @ColumnaD,@TipoD
+	while @@fetch_status = 0
+	begin
+
+		select @cadena='select @total=count(*) from ['+@TablaO+'] a where NOT EXISTS (select * from [' +@TablaD+'] b where a.['+@ColumnaO+']=b.['+@ColumnaD+'] )' 
+		SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
+		exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
+		select @Total_NoExisten=@total
+		select @Factor2_Porcentaje_Coincidencia = 100-(@Total_NoExisten*100)/@Total_RegistrosO
+
+		select @Factor3_PorcentajeUsoFK = 0
+		if @Factor2_Porcentaje_Coincidencia>=75
+			begin
+
+				select @cadena='select @total=count(distinct ['+@ColumnaD+']) from ['+@TablaD+']' 
+				SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
+				exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
+				select @Total_F3_N1=@total
+
+				select @cadena='select @total=count(distinct ['+@ColumnaD+']) from ['+@TablaD+'] a where EXISTS (select * from [' +@TablaO+'] b where b.['+@ColumnaO+']=a.['+@ColumnaD+'] )' 
+				SET @ParmDefinition = N'@total varchar(30) OUTPUT'; 
+				exec sp_executesql @cadena, @ParmDefinition, @total OUTPUT
+				select @Total_F3_N2=@total
+				select @Factor3_PorcentajeUsoFK = (@Total_F3_N2*100)/@Total_F3_N1
+--				select @Factor3_PorcentajeUsoFK
+			end
+
+		insert into #Resultado
+		select 
+			@TablaO, @ColumnaO, @TablaD, @ColumnaD, 
+			case Difference(@ColumnaO,@ColumnaD) 
+				when 0 then 0
+				when 1 then 25
+				when 2 then 50
+				when 3 then 75
+				else 100 
+			end as Factor1_DistanciaCadena, 
+			@Total_RegistrosO, @Total_NoExisten, @Factor2_Porcentaje_Coincidencia,
+			@Factor3_PorcentajeUsoFK
+
+		fetch next from ColumnasDestino into @TablaD, @ColumnaD,@TipoD
+	end
+	close ColumnasDestino
+	deallocate ColumnasDestino
+
+	fetch next from ColumnasOrigen into @TablaO, @ColumnaO,@TipoO
+end
+close ColumnasOrigen
+deallocate ColumnasOrigen
+
+select * from #Resultado 
+where Factor2_Porcentaje_Coincidencia>=75
+and Factor3_PorcentajeUsoFK>=25
+
+Drop Table if exists #Resultado
 
 
 declare @password varchar(30)
@@ -273,4 +268,3 @@ declare @password varchar(30)
 select @password = 'X or 1==1'
 
 select 'select count(*) from ta_password where IdPassword='+char(34)+@password+char(34)
-
