@@ -18,6 +18,6 @@ GO
 INSERT INTO [SNTBROKER_SIE_V3].[dbo].[COTIZACIONES_DIARIAS_TEMP_V3]
 select
  convert(smallint, IDEMPRESA) as IDEMPRESA,
- convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
+ convert(smalldatetime, CONCAT(ANNIO,'-',MES,'-',DIA)) as FECHA,
  convert(float(10), ULT) as ULT
 from [SNTBROKER_SIE].[dbo].[COTIZACIONES_DIARIAS_TEMP_V2]

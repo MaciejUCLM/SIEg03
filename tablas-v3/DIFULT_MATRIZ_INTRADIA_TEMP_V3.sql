@@ -23,7 +23,7 @@ select
  convert(smallint, IDMERCADO) as IDMERCADO,
  convert(smallint, IDEMPRESA)  as IDEMPRESA,
  convert(nvarchar(10), CLAVE)  as CLAVE,
- convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
+ convert(smalldatetime, CONCAT(ANNIO,'-',MES,'-',DIA)) as FECHA,
  convert(nvarchar(80), MATRIZ1) as MATRIZ1,
  convert(nvarchar(70), MATRIZ2)  as MATRIZ2
 from [SNTBROKER_SIE].[dbo].[DIFULT_MATRIZ_INTRADIA_TEMP_V2]

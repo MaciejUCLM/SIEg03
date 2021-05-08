@@ -28,7 +28,7 @@ select
  convert(smallint, IDMERCADO) as IDMERCADO,
  convert(smallint, IDEMPRESA)  as IDEMPRESA,
  convert(nvarchar(10), CLAVE)  as CLAVE,
- convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
+ convert(smalldatetime, CONCAT(ANNIO,'-',MES,'-',DIA)) as FECHA,
  convert(nvarchar(5), HORA) as HORA,
  convert(float(15), ULT)  as ULT,
  convert(float(15), DIF)  as DIF,

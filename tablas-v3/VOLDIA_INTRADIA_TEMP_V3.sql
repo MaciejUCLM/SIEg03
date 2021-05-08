@@ -99,7 +99,7 @@ select
 	convert(smallint, IDMERCADO) as IDMERCADO,
 	convert(smallint, IDEMPRESA) as IDEMPRESA,
 	convert(varchar(5), CLAVE) as CLAVE,
-    convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
+    convert(smalldatetime, CONCAT(ANNIO,'-',MES,'-',DIA)) as FECHA,
     convert(real, [15_30]) as [15_30],
     convert(real, [15_35]) as [15_35],
     convert(real, [15_40]) as [15_40],

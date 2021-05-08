@@ -97,7 +97,7 @@ INSERT INTO [dbo].[ULTDIA_INTRADIA1_HOY_TEMP_v3]
 select
 	convert(smallint, IDEMPRESA) as IDEMPRESA,
 	convert(varchar(5), CLAVE) as CLAVE,
-    convert(smalldatetime, CONCAT(a.ANNIO,'-',a.MES,'-',a.DIA)) as FECHA,
+    convert(smalldatetime, CONCAT(ANNIO,'-',MES,'-',DIA)) as FECHA,
 	convert(real, [15_25]) as [15_25],
     convert(real, [15_30]) as [15_30],
     convert(real, [15_35]) as [15_35],
