@@ -1,10 +1,10 @@
-select count(*) from ACCIONESEEUU_V3
+select count(*) from ACCIONESEEUU_V2
 
 select * from sys.columns
 
 -- Fase 1: Detectar las PKs potenciales.
 select count(*) from (
-select DIFERENCIA, count(*) numero from COTIZACIONES_V3 group by DIFERENCIA having count(*)>1
+select DIFERENCIA, count(*) numero from COTIZACIONES_V2 group by DIFERENCIA having count(*)>1
 ) A
 
 -- Fase 2: Listar todas las columnas de todas las tablas.

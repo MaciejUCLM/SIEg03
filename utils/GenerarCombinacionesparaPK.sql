@@ -1,4 +1,4 @@
-USE [SNTBROKER_SIE_V3]
+USE [SNTBROKER_SIE]
 GO
 
 /****** Object:  StoredProcedure [dbo].[CombinacionesPK_GT00_V1]    Script Date: 25/03/2020 9:33:05 ******/
